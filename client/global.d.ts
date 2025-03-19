@@ -3,11 +3,13 @@ import { EditorView } from 'prosemirror-view'
 import { MenuBar, MenuItem } from '@/components/MenuBar'
 import { CatalogBar, CatalogItem } from '@/components/CatalogBar'
 import { CountBar } from '@/components/CountBar'
+import type Collaboration from '@/collaboration/collaboration'
 
 declare global {
   interface Window {
     editor: Editor
     view: EditorView
+    collaboration: Collaboration
   }
   
   interface HTMLElementTagNameMap {

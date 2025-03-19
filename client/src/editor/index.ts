@@ -10,9 +10,11 @@ export default class Editor {
   view: EditorView
   state: EditorState
   schema: Schema
+  initialDoc: any
 
-  constructor(element: HTMLElement) {
+  constructor(element: HTMLElement, initialDoc?: any) {
     this.element = element
+    this.initialDoc = initialDoc
     this.schema = schema
     this.state = this.createState()
     this.view = this.createView()
@@ -20,7 +22,7 @@ export default class Editor {
 
   createState(): EditorState {
     return EditorState.create({
-      doc: this.initialDoc(),
+      doc: this.createDoc(),
       schema,
       plugins,
     })
@@ -30,14 +32,23 @@ export default class Editor {
     return new EditorView(this.element, {
       state: this.state,
       decorations,
-      // dispatchTransaction(transaction) {
-      //   const newState = editorView.state.apply(transaction);
-      //   editorView.updateState(newState);
-      // },
+      dispatchTransaction: transaction => {
+        const newState = this.view.state.apply(transaction);
+        this.view.updateState(newState);
+        
+        const isFromServer = !!transaction.getMeta('isFromServer')
+        console.error("xxxx ~~ isFromServer:", transaction.getMeta('isFromServer'))
+        if (!isFromServer && transaction.docChanged) {
+          window.collaboration.async2Server(newState)
+        }
+      },
     })
   }
 
-  initialDoc(): Node {
+  createDoc(): Node {
+    if (this.initialDoc) {
+      return this.schema.nodeFromJSON(this.initialDoc)
+    }
     const title = this.schema.nodes.title.create(null, this.schema.nodes.paragraph.create())
     const body = this.schema.nodes.paragraph.create()
     const doc = this.schema.nodes.doc.create(null, [title, body])

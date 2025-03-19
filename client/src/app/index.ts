@@ -4,11 +4,13 @@ import "@/components/CatalogBar"
 import "@/components/CountBar"
 import { EditorView } from "prosemirror-view"
 import { TextSelection } from "prosemirror-state"
+import Collaboration from "@/collaboration"
+import WS from "@/network/ws"
 
-const createEditor = () => {
+const createEditor = (doc?: any) => {
   const editorDom = document.createElement('div')
   editorDom.classList.add('editor')
-  window.editor = new Editor(editorDom)
+  window.editor = new Editor(editorDom, doc)
   window.view = window.editor.view
   return editorDom
 }
@@ -28,9 +30,14 @@ function focusOnTitleEnd(editorView: EditorView) {
 }
 
 const createApp = (app: Element) => {
-  app.append(createEditor())
-  // window.editor.view.focus()
-  focusOnTitleEnd(window.view)
+  const ws = new WS()
+  console.error("xxxx ~ createApp ~ ws:", 1)
+  ws.onReady = (doc) => {
+    window.collaboration = new Collaboration(ws)
+    app.append(createEditor(doc))
+    // window.editor.view.focus()
+    focusOnTitleEnd(window.view)
+  }
 }
 
 export default createApp
