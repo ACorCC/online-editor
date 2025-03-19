@@ -12,7 +12,7 @@ export default class WS {
     this.ws.onopen = () => {
       console.log('ws connected')
     }
-    this.ws.onmessage = this._onMessage
+    this.ws.onmessage = this._onMessage.bind(this)
     this.ws.onclose = () => {
       console.log('ws closed')
     }

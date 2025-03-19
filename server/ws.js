@@ -5,7 +5,8 @@ const url = require("url");
 let documentState = {
   type: "doc",
   content: [
-      { type: "paragraph", content: [{ type: "text", text: "Hello ProseMirror!" }] }
+      { type: "title", content: [{ type: "paragraph", content: [] }] },
+      { type: "paragraph", content: [] }
   ]
 };
 
