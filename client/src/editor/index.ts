@@ -37,7 +37,7 @@ export default class Editor {
         this.view.updateState(newState);
         
         const isFromServer = !!transaction.getMeta('isFromServer')
-        console.error("xxxx ~~ isFromServer:", transaction.getMeta('isFromServer'))
+        console.error("xxxx ~~ isFromServer:", transaction)
         if (!isFromServer && transaction.docChanged) {
           window.collaboration.async2Server(newState)
         }

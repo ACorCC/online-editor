@@ -1,11 +1,14 @@
 * {
   box-sizing: border-box;
+  border-color: #fff !important;
 }
 
 html,
 body {
   margin: 0;
   padding: 0;
+  color: #fff;
+  background-color: #272727;
 }
 
 .editor {

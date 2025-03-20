@@ -8,8 +8,8 @@ export default class CatalogItem extends LitElement {
     css`
       #wrapper {
         padding: 6px 8px;
-        background-color: #fff;
-        color: #252525;
+        background-color: #272727;
+        color: #fff;
         cursor: pointer;
         border-radius: 5px;
         border: 1px solid skyblue;
@@ -18,13 +18,13 @@ export default class CatalogItem extends LitElement {
         white-space: nowrap;
         
         &:hover {
-          background-color: #ddd;
-          color: blue;
+          background-color:#666;
+          color: #fff;
         }
         &.active {
           font-weight: 700;
-          background-color: #ddd;
-          color: blue;
+          background-color: #666;
+          color: #fff;
         }
         &.level-2 {
           padding-left: 28px;

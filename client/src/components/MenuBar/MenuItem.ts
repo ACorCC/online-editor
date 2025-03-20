@@ -8,18 +8,18 @@ export default class MenuItem extends LitElement {
     css`
       #wrapper {
         padding: 6px 8px;
-        background-color: #fff;
-        color: #252525;
+        background-color: #272727;
+        color: #fff;
         cursor: pointer;
         border-radius: 5px;
         border: 1px solid skyblue;
         &:hover {
-          background-color: #ccc;
+          background-color: #666;
         }
         &.active {
           font-weight: 700;
-          color: blue;
-          background-color: #dddddd;
+          color: #fff;
+          background-color:#666666;
         }
         &.disabled {
           opacity: 0.5;

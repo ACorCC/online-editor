@@ -8,8 +8,8 @@ export default class MenuBar extends LitElement {
     css`
       #menuBar {
         padding: 10px;
-        background-color: #fff;
-        border: 1px solid #252525;
+        background-color: #272727;
+        border: 1px solid #fff;
         display: flex;
         flex-wrap: wrap;
         gap: 5px;

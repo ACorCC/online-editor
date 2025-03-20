@@ -11,8 +11,8 @@ export default class CatalogBar extends LitElement {
         margin-left: 20px;
         height: calc(100vh - 30px);
         padding: 10px;
-        background-color: #fff;
-        border: 1px solid #252525;
+        background-color: #272727;
+        border: 1px solid #fff;
         border-radius: 10px;
         display: flex;
         flex-direction: column;
