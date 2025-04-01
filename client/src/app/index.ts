@@ -7,10 +7,10 @@ import { TextSelection } from "prosemirror-state"
 import Collaboration from "@/collaboration"
 import WS from "@/network/ws"
 
-const createEditor = (doc?: any) => {
+const createEditor = () => {
   const editorDom = document.createElement('div')
   editorDom.classList.add('editor')
-  window.editor = new Editor(editorDom, doc)
+  window.editor = new Editor(editorDom)
   window.view = window.editor.view
   return editorDom
 }
@@ -31,11 +31,14 @@ function focusOnTitleEnd(editorView: EditorView) {
 
 const createApp = (app: Element) => {
   const ws = new WS()
-  console.error("xxxx ~ createApp ~ ws:", 1)
-  ws.onReady = (doc) => {
+  ws.onReady = (data: IMessage) => {
+    const { doc, version } = data
+    //@ts-ignore
+    window.initialDoc = doc
+    //@ts-ignore
+    window.initialVersion = version
     window.collaboration = new Collaboration(ws)
-    app.append(createEditor(doc))
-    // window.editor.view.focus()
+    app.append(createEditor())
     focusOnTitleEnd(window.view)
   }
 }

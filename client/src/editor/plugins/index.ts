@@ -7,8 +7,10 @@ import createMenuBarPlugin from "./menuBar";
 import addHeadingId from './addHeadingId'
 import createCatalog from "./catalog";
 import createCount from "./count";
+import { collab } from "prosemirror-collab";
+import { getUserId } from "@/user";
 
-const plugins: Plugin[] = [
+const createPlugins = (): Plugin[] => [
   keymap(baseKeymap),
   history(),
   inputRulesPlugin,
@@ -16,6 +18,8 @@ const plugins: Plugin[] = [
   addHeadingId,
   createCatalog(),
   createCount(),
+  // @ts-ignore
+  collab({ version: window.initialVersion, clientID: getUserId() })
 ]
 
-export default plugins
+export default createPlugins

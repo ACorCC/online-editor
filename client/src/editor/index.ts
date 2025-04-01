@@ -1,9 +1,10 @@
 import { EditorState } from "prosemirror-state"
 import { EditorView } from "prosemirror-view"
 import schema from './schema'
-import plugins from './plugins'
+import createPlugins from './plugins'
 import decorations from './decorations'
 import { Node, Schema } from "prosemirror-model"
+import { sendableSteps } from "prosemirror-collab"
 
 export default class Editor {
   element: HTMLElement
@@ -12,9 +13,10 @@ export default class Editor {
   schema: Schema
   initialDoc: any
 
-  constructor(element: HTMLElement, initialDoc?: any) {
+  constructor(element: HTMLElement) {
     this.element = element
-    this.initialDoc = initialDoc
+    // @ts-ignore
+    this.initialDoc = window.initialDoc
     this.schema = schema
     this.state = this.createState()
     this.view = this.createView()
@@ -24,7 +26,7 @@ export default class Editor {
     return EditorState.create({
       doc: this.createDoc(),
       schema,
-      plugins,
+      plugins: createPlugins(),
     })
   }
 
@@ -35,11 +37,11 @@ export default class Editor {
       dispatchTransaction: transaction => {
         const newState = this.view.state.apply(transaction);
         this.view.updateState(newState);
-        
-        const isFromServer = !!transaction.getMeta('isFromServer')
-        console.error("xxxx ~~ isFromServer:", transaction)
-        if (!isFromServer && transaction.docChanged) {
-          window.collaboration.async2Server(newState)
+
+        let sendable = sendableSteps(newState)
+        console.error("xxxx ~ sendable:", sendable)
+        if (sendable) {
+          window.collaboration.async2Server(sendable.version, sendable.steps)
         }
       },
     })

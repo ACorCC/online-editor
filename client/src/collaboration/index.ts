@@ -1,5 +1,4 @@
 import type WS from "@/network/ws"
-import { EditorState } from "prosemirror-state"
 
 export default class Collaboration {
 
@@ -9,11 +8,11 @@ export default class Collaboration {
     this.ws = ws
   }
 
-  public async2Server(state: EditorState) {
-    const docJSON = state.doc.toJSON()
-    console.log('async2Server', docJSON)
-    this.ws.send('update', {
-      doc: docJSON
+  public async2Server(version: number, steps: any[]) {
+    this.ws.send({
+      type: 'update',
+      version,
+      steps,
     })
   }
 }

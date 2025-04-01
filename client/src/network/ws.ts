@@ -1,14 +1,16 @@
+import schema from "@/editor/schema"
 import { getUserId } from "@/user"
-import { Slice } from "prosemirror-model"
+import { receiveTransaction } from "prosemirror-collab"
+import { Step } from "prosemirror-transform"
 
 export default class WS {
 
-  public onReady: (doc: any) => void = () => {}
+  public onReady: (data: IMessage) => void = () => {}
 
   private ws: WebSocket
 
   constructor() {
-    this.ws = new WebSocket(`ws://localhost:8080?userId=${getUserId()}`)
+    this.ws = new WebSocket(`ws://localhost:8081?userId=${getUserId()}`)
     this.ws.onopen = () => {
       console.log('ws connected')
     }
@@ -21,33 +23,39 @@ export default class WS {
     }
   }
 
-  public send(type: string, data: { [key in string]: any }) {
-    data.userId = getUserId()
+  public send(params: { [key in string]: any }) {
     this.ws.send(JSON.stringify({
-      type,
-      data
+      ...params,
+      userId: getUserId(),
+      clientId: getUserId(),
     }))
   }
 
   private _onMessage(event: MessageEvent) {
     let data: IMessage = JSON.parse(event.data)
-    console.log('ws received', data)
     switch (data.type) {
       case 'init':
-        this.onReady(data.doc)
+        this.onReady(data)
         break
       case 'update':
-        console.log("收到文档:", data.doc);
-        const doc = data.doc
-        const view = window.view
-        // 其他客户端更新时，更新本地文档
-        const { state, dispatch } = view;
-        const tr = state.tr.replace(0, state.doc.nodeSize - 2, new Slice(view.state.schema.nodeFromJSON(doc).content, 0, 0));
-        tr.setMeta('isFromServer', true);
-        dispatch(tr);
+        this._onUpdate(data)
+        break
+      case 'sync':
+        break
+      case 'error':
         break
       default:
         break
     }
+  }
+
+  private _onUpdate(data: IMessage) {
+    console.log('收到服务端更新', data)
+    const { steps, version, clientIDs } = data
+    const newSteps = steps.map((step: any) => Step.fromJSON(schema, step))
+    const view = window.view
+    const tr = receiveTransaction(view.state, newSteps, clientIDs);
+    console.error("xxxx ~ WS ~ _onUpdate ~ tr:", data, tr, tr.steps.length)
+    view.dispatch(tr);
   }
 }

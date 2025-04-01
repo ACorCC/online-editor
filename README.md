@@ -3,7 +3,7 @@
 ```shell
 cd ./server
 npm i
-node index.js
+npm run dev
 ```
 
 ## start client
